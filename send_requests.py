@@ -1,15 +1,16 @@
 import requests
 
-class storage_api:
+
+class StorageApi:
     def __init__(self, host, port):
-        self.host=host
+        self.host = host
         self.port = port
 
     def get_schema(self):
         answer = requests.get("http://"+self.host+":"+self.port+"/scheme")
         return answer.text
 
-    def put_item(self,data):
+    def put_item(self, data):
         try:
             answer = requests.post(url="http://"+self.host+":"+self.port,
                                    json=data)
@@ -20,12 +21,12 @@ class storage_api:
     def position(self, destination):
         try:
             answer = requests.get(url="http://"+self.host+":"+self.port+"/position",
-                                   params=destination)
+                                  params=destination)
             return answer.text
         except Exception as e:
             print(e)
 
-#Ниже пример использования класса:
+# ниже пример использования класса:
 # a = storage_api("127.0.0.1", "5000")
 # print(a.get_schema())
 # print(a.position({"destination":["A1"]}))
