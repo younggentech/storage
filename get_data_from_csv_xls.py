@@ -1,18 +1,16 @@
+import json
 import os.path
 import uuid
 from pandas import read_excel
-
-
-
+from math import ceil
 
 class Item(object):
 
-
     def __init__(self, name, height, width, depth, mass):
         self.name = name
-        self.height = height
-        self.width = width
-        self.depth = depth
+        self.height = ceil(int(height)/1000)
+        self.width = ceil(int(width)/1000)
+        self.depth = ceil(int(depth)/1000)
         self.mass = mass
         self.uuid = uuid.uuid4().hex
 
@@ -53,7 +51,6 @@ class Item(object):
         return NotImplemented
 
 
-
 class WayBill:
     def __init__(self, fileway):
         if os.path.exists(fileway):
@@ -80,4 +77,4 @@ class WayBill:
 wb = WayBill("/Users/ovsannikovaleksandr/Desktop/предпроф/for_test.xlsx")
 itms = wb.create_item_list()
 for i in itms:
-    print(i.mass)
+    print(i.__dict__)
