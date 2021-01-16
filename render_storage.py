@@ -132,8 +132,8 @@ class RenderStorage(StorageApi):
         self.merged_from_group[0] = []
         for group_num in range(len(self.merged)):
             for cell in self.merged[group_num]:
-                self.group_of_merge[cell] = group_num+1
-                if group_num+1 in self.merged_from_group:
+                self.group_of_merge[cell] = group_num + 1
+                if group_num + 1 in self.merged_from_group:
                     self.merged_from_group[group_num + 1].append(cell)
                 else:
                     self.merged_from_group[group_num + 1] = [cell]
@@ -148,36 +148,42 @@ class RenderStorage(StorageApi):
             return (2, 2)
 
     def render(self):
-        _width = (self.width + 2)*100
-        _height = (self.height + 2)*100
+        _width = (self.width + 2) * 100
+        _height = (self.height + 2) * 100
         image = Image.new("RGB", (_width, _height), (255, 255, 255))
         draw = ImageDraw.Draw(image)
 
-        for w in range(self.width+1):
-            for h in range(self.height+1):
-                draw.line((100+(w*100), _height-((self.height+1)*100), 100+(w*100), (self.height+1)*100),
+        for w in range(self.width + 1):
+            for h in range(self.height + 1):
+                draw.line(
+                    (100 + (w * 100), _height - ((self.height + 1) * 100), 100 + (w * 100), (self.height + 1) * 100),
+                    fill=ImageColor.getrgb("black"))
+                draw.line(((w * 100) + 100, 100 + (h * 100), 100, 100 + (h * 100)),
                           fill=ImageColor.getrgb("black"))
-                draw.line(((w*100)+100, 100 +  (h * 100), 100, 100 + (h * 100)),
-                          fill=ImageColor.getrgb("black"))
-        font = ImageFont.truetype("Arial.ttf",16)
+        font = ImageFont.truetype("Arial.ttf", 16)
         for block_num in range(self.height):
             for cell_num in range(self.width):
                 _cell = self.cells[block_num][cell_num]
-                if _cell.merged==True:
+                if _cell.merged == True:
                     try:
-                        if self.cells[block_num][cell_num+1].merged==True and _cell.group_of_merge==self.cells[block_num][cell_num+1].group_of_merge:
-                            draw.line((100+((cell_num+1)*100), 100+((block_num)*100), (100+((cell_num+1)*100)), 200+((block_num)*100)),
+                        if self.cells[block_num][cell_num + 1].merged == True and _cell.group_of_merge == \
+                                self.cells[block_num][cell_num + 1].group_of_merge:
+                            draw.line((100 + ((cell_num + 1) * 100), 100 + (block_num * 100),
+                                       (100 + ((cell_num + 1) * 100)), 200 + (block_num * 100)),
                                       fill=ImageColor.getrgb("white"))
-                        if self.cells[block_num+1][cell_num].merged==True and _cell.group_of_merge==self.cells[block_num+1][cell_num].group_of_merge:
-                            draw.line((100+((cell_num)*100), 100+((block_num+1)*100), (200+((cell_num)*100)), 100+((block_num+1)*100)),
+                        if self.cells[block_num + 1][cell_num].merged == True and _cell.group_of_merge == \
+                                self.cells[block_num + 1][cell_num].group_of_merge:
+                            draw.line((100 + (cell_num * 100), 100 + ((block_num + 1) * 100),
+                                       (200 + (cell_num * 100)), 100 + ((block_num + 1) * 100)),
                                       fill=ImageColor.getrgb("white"))
                     except IndexError:
                         pass
-                draw.text((((cell_num+1)*100)+50, ((block_num+1)*100)+50), text=_cell.name, fill=ImageColor.getrgb("black"), font = font)
-
+                draw.text((((cell_num + 1) * 100) + 50, ((block_num + 1) * 100) + 50), text=_cell.name,
+                          fill=ImageColor.getrgb("black"), font=font)
 
         del draw
         image.save("test.png", "PNG")
+
 
 tr = RenderStorage("127.0.0.1", "5000")
 
