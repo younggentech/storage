@@ -105,12 +105,15 @@ class RenderStorage(StorageApi):
             _c_to_add = []
             for h in range(self.height):
                 _cell = self.num_to_coords[w + 1] + str(h + 1)
+                _width_height = self._determine_width_height_in_merged(_cell)
                 _c_to_add.append(
                     Cell(
                         name=_cell,
                         lvl=w+1,
                         merged=self._check_merged(_cell),
-                        group_of_merge=self.group_of_merge.get(_cell, None)
+                        group_of_merge=self.group_of_merge.get(_cell, None),
+                        size_width=_width_height[0],
+                        size_height=_width_height[1]
                     )
                 )
             self.cells.append(_c_to_add)
@@ -127,6 +130,14 @@ class RenderStorage(StorageApi):
             for cell in self.merged[group_num]:
                 self.group_of_merge[cell] = group_num
 
+    def _determine_width_height_in_merged(self, cell):
+        if cell not in self.group_of_merge:
+            return (1, 1)
+        _values = list(self.group_of_merge.values())
+        if _values.count(self.group_of_merge[cell]) == 2:
+            return (2, 1)
+        else:
+            return (2, 2)
 
 tr = RenderStorage("127.0.0.1", "5000")
 
@@ -135,5 +146,5 @@ print(tr.get_schema())
 print(tr.width)
 for i in tr.cells:
     for j in i:
-        print(j.group_of_merge, end=" ")
+        print(j.size_width, end=" ")
     print()
