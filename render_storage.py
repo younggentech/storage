@@ -33,18 +33,18 @@ class RenderStorage(StorageApi):
                 ))
 
             if __resp["status"] == "position is empty":
-                self.directions["width"] = "y"
-                self.width = _["size"]["size_y"]
-
-                self.directions["height"] = "z"
-                self.height = _["size"]["size_z"]
-
-            else:
                 self.directions["width"] = "z"
                 self.width = _["size"]["size_z"]
 
                 self.directions["height"] = "y"
                 self.height = _["size"]["size_y"]
+
+            else:
+                self.directions["width"] = "y"
+                self.width = _["size"]["size_y"]
+
+                self.directions["height"] = "z"
+                self.height = _["size"]["size_z"]
 
 
 
@@ -58,18 +58,18 @@ class RenderStorage(StorageApi):
                 ))
 
             if __resp["status"] == "position is empty":
-                self.directions["width"] = "x"
-                self.width = _["size"]["size_x"]
-
-                self.directions["height"] = "z"
-                self.height = _["size"]["size_z"]
-
-            else:
                 self.directions["width"] = "z"
                 self.width = _["size"]["size_z"]
 
                 self.directions["height"] = "x"
                 self.height = _["size"]["size_x"]
+
+            else:
+                self.directions["width"] = "x"
+                self.width = _["size"]["size_x"]
+
+                self.directions["height"] = "z"
+                self.height = _["size"]["size_z"]
 
 
         elif _["size"]["size_z"] == 1:
@@ -82,18 +82,18 @@ class RenderStorage(StorageApi):
                 ))
 
             if __resp["status"] == "position is empty":
-                self.directions["width"] = "x"
-                self.width = _["size"]["size_x"]
-
-                self.directions["height"] = "y"
-                self.height = _["size"]["size_y"]
-
-            else:
                 self.directions["width"] = "y"
                 self.width = _["size"]["size_y"]
 
                 self.directions["height"] = "x"
                 self.height = _["size"]["size_x"]
+
+            else:
+                self.directions["width"] = "x"
+                self.width = _["size"]["size_x"]
+
+                self.directions["height"] = "y"
+                self.height = _["size"]["size_y"]
 
         self.merged = _["merged"]
         self.cells = []
@@ -102,9 +102,9 @@ class RenderStorage(StorageApi):
         self.merged_from_group = {}
         self._determine_group_of_merge()
 
-        for w in range(self.width):
+        for w in range(self.height):
             _c_to_add = []
-            for h in range(self.height):
+            for h in range(self.width):
                 _cell = self.num_to_coords[w + 1] + str(h + 1)
                 _width_height = self._determine_width_height_in_merged(_cell)
                 _group_of_merge = self.group_of_merge.get(_cell, 0)
@@ -151,12 +151,16 @@ class RenderStorage(StorageApi):
         _height = (self.height + 2)*100
         image = Image.new("RGB", (_width, _height), (255, 255, 255))
         draw = ImageDraw.Draw(image)
+
         for w in range(self.width+1):
             for h in range(self.height+1):
                 draw.line((100+(w*100), _height-((self.height+1)*100), 100+(w*100), (self.height+1)*100),
                           fill=ImageColor.getrgb("black"))
                 draw.line(((w*100)+100, 100 +  (h * 100), 100, 100 + (h * 100)),
                           fill=ImageColor.getrgb("black"))
+        for block_num in range(self.height):
+            for cell_num in range(self.width):
+                print(self.cells[block_num][cell_num].name)
 
 
         del draw
