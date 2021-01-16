@@ -1,6 +1,7 @@
 import json
+
 from send_requests import StorageApi
-from PIL import Image, ImageDraw, ImageColor
+from PIL import Image, ImageDraw, ImageColor, ImageFont
 
 
 class Cell:
@@ -158,9 +159,10 @@ class RenderStorage(StorageApi):
                           fill=ImageColor.getrgb("black"))
                 draw.line(((w*100)+100, 100 +  (h * 100), 100, 100 + (h * 100)),
                           fill=ImageColor.getrgb("black"))
+        font = ImageFont.truetype("Arial.ttf",16)
         for block_num in range(self.height):
             for cell_num in range(self.width):
-                print(self.cells[block_num][cell_num].name)
+                draw.text((((cell_num+1)*100)+50, ((block_num+1)*100)+50), text=self.cells[block_num][cell_num].name, fill=ImageColor.getrgb("black"), font = font)
 
 
         del draw
