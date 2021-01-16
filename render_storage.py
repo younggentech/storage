@@ -162,7 +162,18 @@ class RenderStorage(StorageApi):
         font = ImageFont.truetype("Arial.ttf",16)
         for block_num in range(self.height):
             for cell_num in range(self.width):
-                draw.text((((cell_num+1)*100)+50, ((block_num+1)*100)+50), text=self.cells[block_num][cell_num].name, fill=ImageColor.getrgb("black"), font = font)
+                _cell = self.cells[block_num][cell_num]
+                if _cell.merged==True:
+                    try:
+                        if self.cells[block_num][cell_num+1].merged==True and _cell.group_of_merge==self.cells[block_num][cell_num+1].group_of_merge:
+                            draw.line((100+((cell_num+1)*100), 100+((block_num)*100), (100+((cell_num+1)*100)), 200+((block_num)*100)),
+                                      fill=ImageColor.getrgb("white"))
+                        if self.cells[block_num+1][cell_num].merged==True and _cell.group_of_merge==self.cells[block_num+1][cell_num].group_of_merge:
+                            draw.line((100+((cell_num)*100), 100+((block_num+1)*100), (200+((cell_num)*100)), 100+((block_num+1)*100)),
+                                      fill=ImageColor.getrgb("white"))
+                    except IndexError:
+                        pass
+                draw.text((((cell_num+1)*100)+50, ((block_num+1)*100)+50), text=_cell.name, fill=ImageColor.getrgb("black"), font = font)
 
 
         del draw
@@ -176,7 +187,7 @@ print(tr.width)
 
 for i in tr.cells:
     for j in i:
-        print(j.group_of_merge, end=" ")
+        print(j.name, end=" ")
     print()
 
 tr.render()
