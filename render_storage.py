@@ -146,6 +146,9 @@ class RenderStorage(StorageApi):
         else:
             return (2, 2)
 
+    def render(self):
+        pass
+
 
 tr = RenderStorage("127.0.0.1", "5000")
 
