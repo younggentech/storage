@@ -1,16 +1,16 @@
 import json
 from send_requests import StorageApi
 
+
 class Cell:
-    def __init__(self, name, lvl, merged, group_of_merge=None, size_width=None, size_height=None):
+    def __init__(self, name, lvl, merged, group_of_merge=0, merged_with=[], size_width=None, size_height=None):
         self.name = name
         self.lvl = lvl
         self.merged = merged
         self.group_of_merge = group_of_merge
+        self.merged_with = merged_with
         self.size_width = size_width
         self.size_height = size_height
-
-
 
 
 class RenderStorage(StorageApi):
@@ -99,6 +99,7 @@ class RenderStorage(StorageApi):
         self.cells = []
 
         self.group_of_merge = {}
+        self.merged_from_group = {}
         self._determine_group_of_merge()
 
         for w in range(self.width):
@@ -106,12 +107,14 @@ class RenderStorage(StorageApi):
             for h in range(self.height):
                 _cell = self.num_to_coords[w + 1] + str(h + 1)
                 _width_height = self._determine_width_height_in_merged(_cell)
+                _group_of_merge = self.group_of_merge.get(_cell, 0)
                 _c_to_add.append(
                     Cell(
                         name=_cell,
-                        lvl=w+1,
+                        lvl=w + 1,
                         merged=self._check_merged(_cell),
-                        group_of_merge=self.group_of_merge.get(_cell, None),
+                        group_of_merge=_group_of_merge,
+                        merged_with=self.merged_from_group[_group_of_merge],
                         size_width=_width_height[0],
                         size_height=_width_height[1]
                     )
@@ -124,11 +127,15 @@ class RenderStorage(StorageApi):
                 return True
         return False
 
-
     def _determine_group_of_merge(self):
+        self.merged_from_group[0] = []
         for group_num in range(len(self.merged)):
             for cell in self.merged[group_num]:
-                self.group_of_merge[cell] = group_num
+                self.group_of_merge[cell] = group_num+1
+                if group_num+1 in self.merged_from_group:
+                    self.merged_from_group[group_num + 1].append(cell)
+                else:
+                    self.merged_from_group[group_num + 1] = [cell]
 
     def _determine_width_height_in_merged(self, cell):
         if cell not in self.group_of_merge:
@@ -139,12 +146,14 @@ class RenderStorage(StorageApi):
         else:
             return (2, 2)
 
+
 tr = RenderStorage("127.0.0.1", "5000")
 
 print(tr.height)
 print(tr.get_schema())
 print(tr.width)
+
 for i in tr.cells:
     for j in i:
-        print(j.size_width, end=" ")
+        print(j.group_of_merge, end=" ")
     print()
