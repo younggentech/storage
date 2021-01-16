@@ -147,16 +147,17 @@ class RenderStorage(StorageApi):
             return (2, 2)
 
     def render(self):
-        _width = (self.width + 1)*100
-        _height = (self.height + 1)*100
+        _width = (self.width + 2)*100
+        _height = (self.height + 2)*100
         image = Image.new("RGB", (_width, _height), (255, 255, 255))
         draw = ImageDraw.Draw(image)
-        for i in range(self.width):
-            draw.line((_width - (self.width*100), 50, (i+1)*100, 50), fill=ImageColor.getrgb("black"))
-            draw.line((_width - (self.width * 100), _height-50, (i + 1) * 100, _height-50), fill=ImageColor.getrgb("black"))
-        for i in range(self.height):
-            draw.line(((self.width*100), 50, (self.width*100), _height-50), fill=ImageColor.getrgb("black"))
-            draw.line((_width - (self.width*100), 50, _width - (self.width*100), _height-50), fill=ImageColor.getrgb("black"))
+        for w in range(self.width+1):
+            for h in range(self.height+1):
+                draw.line((100+(w*100), _height-((self.height+1)*100), 100+(w*100), (self.height+1)*100),
+                          fill=ImageColor.getrgb("black"))
+                draw.line(((w*100)+100, 100 +  (h * 100), 100, 100 + (h * 100)),
+                          fill=ImageColor.getrgb("black"))
+
 
         del draw
         image.save("test.png", "PNG")
