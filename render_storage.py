@@ -1,6 +1,17 @@
 import json
 from send_requests import StorageApi
 
+class Cell:
+    def __init__(self, name, lvl, merged, group_of_merge=None, size_width=None, size_height=None):
+        self.name = name
+        self.lvl = lvl
+        self.merged = merged
+        self.group_of_merge = group_of_merge
+        self.size_width = size_width
+        self.size_height = size_height
+
+
+
 
 class RenderStorage(StorageApi):
 
@@ -84,7 +95,45 @@ class RenderStorage(StorageApi):
                 self.directions["height"] = "x"
                 self.height = _["size"]["size_x"]
 
-# tr =RenderStorage("127.0.0.1", "5000")
-#
-# print(tr.height)
-# print(tr.width)
+        self.merged = _["merged"]
+        self.cells = []
+
+        self.group_of_merge = {}
+        self._determine_group_of_merge()
+
+        for w in range(self.width):
+            _c_to_add = []
+            for h in range(self.height):
+                _cell = self.num_to_coords[w + 1] + str(h + 1)
+                _c_to_add.append(
+                    Cell(
+                        name=_cell,
+                        lvl=w+1,
+                        merged=self._check_merged(_cell),
+                        group_of_merge=self.group_of_merge.get(_cell, None)
+                    )
+                )
+            self.cells.append(_c_to_add)
+
+    def _check_merged(self, cell):
+        for m in self.merged:
+            if cell in m:
+                return True
+        return False
+
+
+    def _determine_group_of_merge(self):
+        for group_num in range(len(self.merged)):
+            for cell in self.merged[group_num]:
+                self.group_of_merge[cell] = group_num
+
+
+tr = RenderStorage("127.0.0.1", "5000")
+
+print(tr.height)
+print(tr.get_schema())
+print(tr.width)
+for i in tr.cells:
+    for j in i:
+        print(j.group_of_merge, end=" ")
+    print()
