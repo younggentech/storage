@@ -1,5 +1,6 @@
 import json
 from send_requests import StorageApi
+from PIL import Image, ImageDraw, ImageColor
 
 
 class Cell:
@@ -14,7 +15,6 @@ class Cell:
 
 
 class RenderStorage(StorageApi):
-
     def __init__(self, host, port):
         super().__init__(host, port)
         _ = json.loads(super(RenderStorage, self).get_schema())
@@ -147,16 +147,29 @@ class RenderStorage(StorageApi):
             return (2, 2)
 
     def render(self):
-        pass
+        _width = (self.width + 1)*100
+        _height = (self.height + 1)*100
+        image = Image.new("RGB", (_width, _height), (255, 255, 255))
+        draw = ImageDraw.Draw(image)
+        for i in range(self.width):
+            draw.line((_width - (self.width*100), 50, (i+1)*100, 50), fill=ImageColor.getrgb("black"))
+            draw.line((_width - (self.width * 100), _height-50, (i + 1) * 100, _height-50), fill=ImageColor.getrgb("black"))
+        for i in range(self.height):
+            draw.line(((self.width*100), 50, (self.width*100), _height-50), fill=ImageColor.getrgb("black"))
+            draw.line((_width - (self.width*100), 50, _width - (self.width*100), _height-50), fill=ImageColor.getrgb("black"))
 
+        del draw
+        image.save("test.png", "PNG")
 
-# tr = RenderStorage("127.0.0.1", "5000")
-#
-# print(tr.height)
-# print(tr.get_schema())
-# print(tr.width)
-#
-# for i in tr.cells:
-#     for j in i:
-#         print(j.group_of_merge, end=" ")
-#     print()
+tr = RenderStorage("127.0.0.1", "5000")
+
+print(tr.height)
+print(tr.get_schema())
+print(tr.width)
+
+for i in tr.cells:
+    for j in i:
+        print(j.group_of_merge, end=" ")
+    print()
+
+tr.render()
