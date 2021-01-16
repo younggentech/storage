@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageColor, ImageFont
 
 
 class Cell:
-    def __init__(self, name, lvl, merged, group_of_merge=0, merged_with=[], size_width=None, size_height=None):
+    def __init__(self, name, lvl, merged, group_of_merge=0, merged_with=[], size_width=None, size_height=None, busy=False):
         self.name = name
         self.lvl = lvl
         self.merged = merged
@@ -13,6 +13,12 @@ class Cell:
         self.merged_with = merged_with
         self.size_width = size_width
         self.size_height = size_height
+        self.busy = busy
+
+    def make_free(self):
+        self.busy = False
+    def make_busy(self):
+        self.busy = True
 
 
 class RenderStorage(StorageApi):
@@ -185,15 +191,15 @@ class RenderStorage(StorageApi):
         image.save("test.png", "PNG")
 
 
-tr = RenderStorage("127.0.0.1", "5000")
-
-print(tr.height)
-print(tr.get_schema())
-print(tr.width)
-
-for i in tr.cells:
-    for j in i:
-        print(j.name, end=" ")
-    print()
-
-tr.render()
+# tr = RenderStorage("127.0.0.1", "5000")
+#
+# print(tr.height)
+# print(tr.get_schema())
+# print(tr.width)
+#
+# for i in tr.cells:
+#     for j in i:
+#         print(j.name, end=" ")
+#     print()
+#
+# tr.render()
