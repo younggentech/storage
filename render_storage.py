@@ -150,13 +150,13 @@ class RenderStorage(StorageApi):
         pass
 
 
-tr = RenderStorage("127.0.0.1", "5000")
-
-print(tr.height)
-print(tr.get_schema())
-print(tr.width)
-
-for i in tr.cells:
-    for j in i:
-        print(j.group_of_merge, end=" ")
-    print()
+# tr = RenderStorage("127.0.0.1", "5000")
+#
+# print(tr.height)
+# print(tr.get_schema())
+# print(tr.width)
+#
+# for i in tr.cells:
+#     for j in i:
+#         print(j.group_of_merge, end=" ")
+#     print()
