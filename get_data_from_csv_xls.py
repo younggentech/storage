@@ -1,8 +1,19 @@
+import os.path
+
+
 class Item:
     def __init__(self, uuid, name, width, height, depth, mass):
-        pass
+        self.uuid = uuid
+        self.name = name
+        self.width = width
+        self.height = height
+        self.depth = depth
+        self.mass = mass
 
 
 class WayBill:
     def __init__(self, fileway):
-        pass
+        if os.path.exists(fileway):
+            self.fileway = fileway
+        else:
+            raise FileNotFoundError
