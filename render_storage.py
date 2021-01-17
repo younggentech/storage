@@ -177,13 +177,18 @@ class RenderStorage(StorageApi):
                             draw.line((100 + ((cell_num + 1) * 100), 100 + (block_num * 100),
                                        (100 + ((cell_num + 1) * 100)), 200 + (block_num * 100)),
                                       fill=ImageColor.getrgb("white"))
+                    except IndexError as e:
+                        pass
+
+                    try:
                         if self.cells[block_num + 1][cell_num].merged == True and _cell.group_of_merge == \
                                 self.cells[block_num + 1][cell_num].group_of_merge:
                             draw.line((100 + (cell_num * 100), 100 + ((block_num + 1) * 100),
                                        (200 + (cell_num * 100)), 100 + ((block_num + 1) * 100)),
                                       fill=ImageColor.getrgb("white"))
-                    except IndexError:
+                    except IndexError as e:
                         pass
+
                 draw.text((((cell_num + 1) * 100) + 50, ((block_num + 1) * 100) + 50), text=_cell.name,
                           fill=ImageColor.getrgb("black"), font=font)
 
