@@ -6,27 +6,61 @@ class Storage(RenderStorage):
     def __init__(self, host, port):
         super().__init__(host, port)
 
-    def put(self, way_bill: WayBill):
+    def start_putting(self, way_bill: WayBill):
+        """START PROCESS OF PUTTING"""
         data = way_bill.create_item_list()
         self.solve_how_to_put(data)
 
     def solve_how_to_put(self, items):
-        for block in range(self.height-1, -1,-1):
-            for cell in range(self.width-1, -1,-1):
-                print(self.cells[block][cell].name, end=" ")
-            print()
+        """SOLVE HOW TO PUT ITEM TO DB"""
 
+        for _item_num in range(len(items)-1, -1, -1):
+            print(items[_item_num].name)
+            _item_was_put = False
+            for _block_num in range(self.height - 1, -1, -1):
+                for _cell_num in range(self.width - 1, -1, -1):
+                    _cell = self.cells[_block_num][_cell_num]
+                    _gab = self.check_gabarits(items[_item_num], _cell)
+                    if not _cell.busy:
+                        if _gab:
+                            if _cell.size_height+_cell.size_width+_cell.size_depth == _gab:
+                                _cell.make_busy()
+                                if _cell.merged:
+                                    for _merged_cell in _cell.merged_with:
+                                        self.easy_find_cell_by_name[_merged_cell].make_busy()
+                                _item_was_put=True
+                                break
+                        else:
+                            self.send_to_remote(items[_item_num])
+                if _item_was_put:
+                    break
+
+    def check_gabarits(self, _item: Item, _cell):
+        """CHECK SIZE OF ITEM"""
+        if ((_item.height + _item.width + _item.depth) > 5) or _item.height>2 or _item.width>2 or _item.depth>2:
+            return 0
+        elif _item.height == 1 and _item.width == 1 and _item.depth == 1:
+            return 3
+        elif ((_item.height == 2 and _item.depth == 1 and _item.width == 1) or (
+                _item.height == 1 and _item.depth == 2 and _item.width == 1) or (
+                      _item.height == 1 and _item.depth == 1 and _item.width == 2)):
+            return 4
+        else:
+            return 5
+
+    def send_to_remote(self, _item):
+        """SEND DATA TO REMOTE DB"""
+        pass
 
 
 tr = Storage("127.0.0.1", "5000")
-
 print(tr.height)
 print(tr.get_schema())
 print(tr.width)
 
 for i in tr.cells:
     for j in i:
-        print(j.name, end=" ")
+        print(j.busy, end=" ")
     print()
 print()
 tr.render()
@@ -35,4 +69,11 @@ for i in wb.create_item_list():
     print(i.__dict__)
 
 print()
-tr.put(wb)
+tr.start_putting(wb)
+print()
+
+for i in tr.cells:
+    for j in i:
+        print(j.busy, end=" ")
+    print()
+print()

@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageColor, ImageFont
 
 
 class Cell:
-    def __init__(self, name, lvl, merged, group_of_merge=0, merged_with=[], size_width=None, size_height=None, busy=False):
+    def __init__(self, name, lvl, merged, group_of_merge=0, merged_with=[], size_width=None, size_height=None, size_depth=1, busy=False):
         self.name = name
         self.lvl = lvl
         self.merged = merged
@@ -13,6 +13,7 @@ class Cell:
         self.merged_with = merged_with
         self.size_width = size_width
         self.size_height = size_height
+        self.size_depth = size_depth
         self.busy = busy
 
     def make_free(self):
@@ -108,7 +109,7 @@ class RenderStorage(StorageApi):
         self.group_of_merge = {}
         self.merged_from_group = {}
         self._determine_group_of_merge()
-
+        self.easy_find_cell_by_name={}
         for w in range(self.height):
             _c_to_add = []
             for h in range(self.width):
@@ -127,6 +128,10 @@ class RenderStorage(StorageApi):
                     )
                 )
             self.cells.append(_c_to_add)
+
+            for _block in self.cells:
+                for _cell in _block:
+                    self.easy_find_cell_by_name[_cell.name] = _cell
 
     def _check_merged(self, cell):
         for m in self.merged:
