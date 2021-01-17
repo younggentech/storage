@@ -194,6 +194,15 @@ class RenderStorage(StorageApi):
                     except IndexError as e:
                         pass
 
+                if _cell.busy:
+                    draw.line((100 + ((cell_num) * 100), 100 + (block_num * 100),
+                               (200 + ((cell_num) * 100)), 200 + (block_num * 100)),
+                              fill=ImageColor.getrgb("red"))
+                    draw.line((200 + ((cell_num) * 100), 100 + (block_num * 100),
+                               (100 + ((cell_num) * 100)), 200 + (block_num * 100)),
+                              fill=ImageColor.getrgb("red"))
+
+
                 draw.text((((cell_num + 1) * 100) + 50, ((block_num + 1) * 100) + 50), text=_cell.name,
                           fill=ImageColor.getrgb("black"), font=font)
 
