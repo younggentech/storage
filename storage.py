@@ -19,25 +19,25 @@ class Storage(RenderStorage):
             for _block_num in range(self.height - 1, -1, -1):
                 for _cell_num in range(self.width - 1, -1, -1):
                     _cell = self.cells[_block_num][_cell_num]
-                    _gab = self.check_gabarits(items[_item_num], _cell)
+                    _item = items[_item_num]
+                    _gab = self.check_gabarits(_item, _cell)
                     if not _cell.busy:
                         if _gab:
                             if _cell.size_height+_cell.size_width+_cell.size_depth == _gab:
-                                _cell.make_busy()
-
-
+                                _cell.put_to_cell(_item)
 
                                 if _cell.merged:
                                     for _merged_cell in _cell.merged_with:
-                                        self.easy_find_cell_by_name[_merged_cell].make_busy()
-                                self.send_to_db(items[_item_num], _cell)
-                                super(Storage, self).render()
+                                        self.easy_find_cell_by_name[_merged_cell].put_to_cell(_item)
+                                self.send_to_db(_item, _cell)
                                 _item_was_put=True
                                 break
                         else:
-                            self.send_to_remote(items[_item_num])
+                            self.send_to_remote(_item)
                 if _item_was_put:
                     break
+
+        super(Storage, self).render()
 
     def check_gabarits(self, _item: Item, _cell):
         """CHECK SIZE OF ITEM"""

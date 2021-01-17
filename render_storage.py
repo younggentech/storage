@@ -1,5 +1,6 @@
 import json
 
+from get_data_from_csv_xls import Item
 from send_requests import StorageApi
 from PIL import Image, ImageDraw, ImageColor, ImageFont
 
@@ -18,10 +19,20 @@ class Cell:
         #for render merged cells
         self.rendered=False
 
-    def make_free(self):
+        self.contained_item=None
+
+    def _make_free(self):
         self.busy = False
-    def make_busy(self):
+    def _make_busy(self):
         self.busy = True
+
+    def put_to_cell(self, item: Item):
+        self.contained_item = item
+        self._make_busy()
+
+    def get_from_item(self):
+        self.contained_item = None
+        self._make_free()
 
 
 class RenderStorage(StorageApi):
@@ -234,17 +245,3 @@ class RenderStorage(StorageApi):
 
         del draw
         image.save("test.png", "PNG")
-
-
-# tr = RenderStorage("127.0.0.1", "5000")
-#
-# print(tr.height)
-# print(tr.get_schema())
-# print(tr.width)
-#
-# for i in tr.cells:
-#     for j in i:
-#         print(j.name, end=" ")
-#     print()
-#
-# tr.render()
