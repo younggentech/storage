@@ -11,7 +11,7 @@ class TalkToDB:
     def send_to_db(self, item, cell):
         pass
 
-    def get_from_db(self, key):
+    def get_position_from_db(self, key):
         pass
 
     def send_to_remote_db(self, data):
@@ -21,7 +21,7 @@ class TalkToDB:
 class Storage(RenderStorage):
     def __init__(self, host, port):
         super().__init__(host, port)
-        self.items_dict = {}
+        self.item_uuid_cell_name_dict = {}
         self.database_sender = TalkToDB()
 
     def put(self, way_bill: WayBill):
@@ -44,7 +44,7 @@ class Storage(RenderStorage):
                         if _gab:
                             if _cell.size_height + _cell.size_width + _cell.size_depth == _gab:
                                 _cell.put_to_cell(_item)
-                                self.items_dict.update({_item.uuid: _item})
+                                self.item_uuid_cell_name_dict.update({_item.uuid: _cell.name})
 
                                 if _cell.merged:
                                     for _merged_cell in _cell.merged_with:
@@ -83,8 +83,12 @@ class Storage(RenderStorage):
 
     def get(self, uuid: str):
         """GET POSITION FROM STORAGE"""
-        pass
+        try:
+            _cell = self.easy_find_cell_by_name[self.database_sender.get_position_from_db(uuid)]
+        except:
+            return "NO SUCH UUID FOUND"
 
+        #TODO: write get func
 
 tr = Storage("127.0.0.1", "5000")
 print(tr.get_schema_api())
@@ -101,7 +105,7 @@ for i in wb.create_item_list():
 
 print()
 print(tr.put(wb))
-print(tr.items_dict)
+print(tr.item_uuid_cell_name_dict)
 print()
 
 for i in tr.cells:
