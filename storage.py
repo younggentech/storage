@@ -62,7 +62,7 @@ class Storage(RenderStorage):
 
 
 tr = Storage("127.0.0.1", "5000")
-print(tr.get_schema())
+print(tr.get_schema_api())
 print()
 for i in tr.cells:
     for j in i:

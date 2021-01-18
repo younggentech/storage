@@ -38,7 +38,7 @@ class Cell:
 class RenderStorage(StorageApi):
     def __init__(self, host, port):
         super().__init__(host, port)
-        _ = json.loads(super(RenderStorage, self).get_schema())
+        _ = json.loads(super(RenderStorage, self).get_schema_api())
         self.num_to_coords = {1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E', 6: 'F', 7: 'G', 8: 'H', 9: 'I', 10: 'J', 11: 'K',
                               12: 'L', 13: 'M', 14: 'N', 15: 'O', 16: 'P', 17: 'Q', 18: 'R', 19: 'S', 20: 'T', 21: 'U',
                               22: 'V', 23: 'W', 24: 'X', 25: 'Y', 26: 'Z'}
@@ -49,9 +49,8 @@ class RenderStorage(StorageApi):
 
             __resp = json.loads(
                 super(RenderStorage, self) \
-                    .position(
-                    {"destination": [self.num_to_coords[_["size"]["size_y"]] + str(_["size"]["size_z"])]}
-                ))
+                    .position_api(
+                    {"destination": [self.num_to_coords[_["size"]["size_y"]] + str(_["size"]["size_z"])]}))
 
             if __resp["status"] == "position is empty":
                 self.directions["width"] = "z"
@@ -74,9 +73,8 @@ class RenderStorage(StorageApi):
 
             __resp = json.loads(
                 super(RenderStorage, self) \
-                    .position(
-                    {"destination": [self.num_to_coords[_["size"]["size_x"]] + str(_["size"]["size_z"])]}
-                ))
+                    .position_api(
+                    {"destination": [self.num_to_coords[_["size"]["size_x"]] + str(_["size"]["size_z"])]}))
 
             if __resp["status"] == "position is empty":
                 self.directions["width"] = "z"
@@ -98,9 +96,8 @@ class RenderStorage(StorageApi):
 
             __resp = json.loads(
                 super(RenderStorage, self) \
-                    .position(
-                    {"destination": [self.num_to_coords[_["size"]["size_x"]] + str(_["size"]["size_y"])]}
-                ))
+                    .position_api(
+                    {"destination": [self.num_to_coords[_["size"]["size_x"]] + str(_["size"]["size_y"])]}))
 
             if __resp["status"] == "position is empty":
                 self.directions["width"] = "y"
