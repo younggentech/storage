@@ -1,3 +1,5 @@
+import json
+
 from render_storage import RenderStorage
 from get_data_from_csv_xls import Item, WayBill
 
@@ -9,10 +11,11 @@ class Storage(RenderStorage):
     def start_putting(self, way_bill: WayBill):
         """START PROCESS OF PUTTING"""
         data = way_bill.create_item_list()
-        self.solve_how_to_put(data)
+        return self.solve_how_to_put(data)
 
     def solve_how_to_put(self, items):
         """SOLVE HOW TO PUT ITEM TO DB"""
+        _data_to_send_to_api = []
 
         for _item_num in range(len(items)-1, -1, -1):
             _item_was_put = False
@@ -29,6 +32,9 @@ class Storage(RenderStorage):
                                 if _cell.merged:
                                     for _merged_cell in _cell.merged_with:
                                         self.easy_find_cell_by_name[_merged_cell].put_to_cell(_item)
+
+                                _data_to_send_to_api.append({"uuid": _item.uuid,
+                                                             "destination": [_cell.name] if not _cell.merged else _cell.merged_with})
                                 self._send_to_db(_item, _cell)
                                 _item_was_put=True
                                 break
@@ -36,8 +42,12 @@ class Storage(RenderStorage):
                             self._send_to_remote(_item)
                 if _item_was_put:
                     break
-
-        super(Storage, self).render()
+        resp = json.loads(self.put_item_api(_data_to_send_to_api))
+        if resp["status"] == "ok":
+            super(Storage, self).render()
+            return "OK"
+        else:
+            return "Error"
 
     def _check_gabarits(self, _item: Item, _cell):
         """CHECK SIZE OF ITEM"""
@@ -75,7 +85,7 @@ for i in wb.create_item_list():
     print(i.__dict__)
 
 print()
-tr.start_putting(wb)
+print(tr.start_putting(wb))
 print()
 
 for i in tr.cells:
