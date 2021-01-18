@@ -77,9 +77,3 @@ class WayBill:
 
     def set_fileway(self, new_fileway):
         self.__init__(fileway=new_fileway)
-
-
-# wb = WayBill("/Users/ovsannikovaleksandr/Desktop/предпроф/for_test.xlsx")
-# itms = wb.create_item_list()
-# for i in itms:
-#     print(i.__dict__)

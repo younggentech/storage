@@ -213,6 +213,7 @@ class RenderStorage(StorageApi):
 
                 if _cell.busy and not _cell.rendered:
                     if _cell.merged == False:
+                        _cell.rendered = True
                         draw.line((100 + ((cell_num) * 100), 100 + (block_num * 100),
                                    (200 + ((cell_num) * 100)), 200 + (block_num * 100)),
                                   fill=ImageColor.getrgb("red"))
@@ -236,6 +237,34 @@ class RenderStorage(StorageApi):
                                       fill=ImageColor.getrgb("red"))
                         for _merged_cell in _cell.merged_with:
                             self.easy_find_cell_by_name[_merged_cell].rendered = True
+
+                if not _cell.busy and _cell.rendered:
+                    if _cell.merged == False:
+                        _cell.rendered = False
+                        draw.line((100 + ((cell_num) * 100), 100 + (block_num * 100),
+                                   (200 + ((cell_num) * 100)), 200 + (block_num * 100)),
+                                  fill=ImageColor.getrgb("white"))
+                        draw.line((200 + ((cell_num) * 100), 100 + (block_num * 100),
+                                   (100 + ((cell_num) * 100)), 200 + (block_num * 100)),
+                                  fill=ImageColor.getrgb("white"))
+                    else:
+
+                        if len(_cell.merged_with) == 2:
+                            draw.line((100 + ((cell_num) * 100), 100 + (block_num * 100),
+                                       (200 + ((cell_num+1) * 100)), 200 + (block_num * 100)),
+                                      fill=ImageColor.getrgb("white"))
+                            draw.line((200 + ((cell_num+1) * 100), 100 + (block_num * 100),
+                                       (100 + ((cell_num) * 100)), 200 + (block_num * 100)),
+                                      fill=ImageColor.getrgb("white"))
+                        else:
+                            draw.line((100 + ((cell_num) * 100), 100 + (block_num * 100),
+                                       (200 + ((cell_num+1) * 100)), 200 + ((block_num+1) * 100)),
+                                      fill=ImageColor.getrgb("white"))
+                            draw.line((200 + ((cell_num+1) * 100), 100 + (block_num * 100),
+                                       (100 + ((cell_num) * 100)), 200 + ((block_num+1) * 100)),
+                                      fill=ImageColor.getrgb("white"))
+                        for _merged_cell in _cell.merged_with:
+                            self.easy_find_cell_by_name[_merged_cell].rendered = False
 
 
 

@@ -25,11 +25,3 @@ class StorageApi:
             return answer.text
         except Exception as e:
             print(e)
-
-# ниже пример использования класса:
-# a = StorageApi("127.0.0.1", "5000")
-# print((a.get_schema()))
-# print(a.position({"destination":["A1"]}))
-# print(a.put_item([{"uuid": "67568fb7f2c1d06d40450a478863bab1", "destination":["A1"]}]))
-# print(a.position({"destination":["A1"]}))
-# print(a.put_item([{"uuid": "67568fb7f2c1d06d40450a478863bab1", "destination":["A1"]}]))
