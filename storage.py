@@ -12,7 +12,7 @@ class TalkToDB:
         pass
 
     def get_position_from_db(self, key):
-        pass
+        return "E1"
 
     def send_to_remote_db(self, data):
         pass
@@ -61,8 +61,12 @@ class Storage(RenderStorage):
                             self.database_sender.send_to_remote_db(_item)
                 if _item_was_put:
                     break
-        resp = json.loads(self.put_item_api(_data_to_send_to_api))
-        if resp["status"] == "ok":
+
+            #отправляем на удаленный склад, если место не найдено
+            self.database_sender.send_to_remote_db(items[_item_num])
+
+        _resp = json.loads(self.put_item_api(_data_to_send_to_api))
+        if _resp["status"] == "ok":
             super(Storage, self).render()
             return "OK"
         else:
@@ -88,7 +92,17 @@ class Storage(RenderStorage):
         except:
             return "NO SUCH UUID FOUND"
 
-        #TODO: write get func
+        _resp = json.loads(self.position_api({"destination":[_cell.name] if not _cell.merged else _cell.merged_with}))
+        if _cell.merged:
+            for _merged_cell in _cell.merged_with:
+                self.easy_find_cell_by_name[_merged_cell]._make_free()
+        if _resp["status"] == "position is empty":
+            return "Position is empty"
+        elif _resp["status"] == "ok":
+            self.render()
+            return "OK"
+        else:
+            return "ERROR"
 
 tr = Storage("127.0.0.1", "5000")
 print(tr.get_schema_api())
