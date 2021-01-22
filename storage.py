@@ -1,5 +1,8 @@
 import json
-
+import sqlite3
+from sqlite3 import Error
+import os
+import pickle
 from render_storage import RenderStorage
 from get_data_from_csv_xls import Item, WayBill
 
@@ -16,6 +19,22 @@ class TalkToDB:
 
     def send_to_remote_db(self, data):
         pass
+
+
+class StorageMaker:
+    def __init__(self, host='5000', port='127.0.0.1'):
+        if os.path.exists(os.getcwdb().decode() + "/storage"):
+            with open(os.getcwdb().decode() + "/storage", "rb") as file:
+                self.storage = pickle.load(file)
+        else:
+            self.storage = Storage(port=port, host=host)
+
+    def __del__(self):
+        try:
+            with open(os.getcwdb().decode() + "/storage", "wb") as f:
+                pickle.dump(self.storage, f)
+        except Error as e:
+            print(e)
 
 
 class Storage(RenderStorage):
@@ -62,7 +81,7 @@ class Storage(RenderStorage):
                 if _item_was_put:
                     break
 
-            #отправляем на удаленный склад, если место не найдено
+            # отправляем на удаленный склад, если место не найдено
             self.database_sender.send_to_remote_db(items[_item_num])
 
         _resp = json.loads(self.put_item_api(_data_to_send_to_api))
@@ -92,7 +111,7 @@ class Storage(RenderStorage):
         except:
             return "NO SUCH UUID FOUND"
 
-        _resp = json.loads(self.position_api({"destination":[_cell.name] if not _cell.merged else _cell.merged_with}))
+        _resp = json.loads(self.position_api({"destination": [_cell.name] if not _cell.merged else _cell.merged_with}))
         if _cell.merged:
             for _merged_cell in _cell.merged_with:
                 self.easy_find_cell_by_name[_merged_cell]._make_free()
@@ -104,26 +123,29 @@ class Storage(RenderStorage):
         else:
             return "ERROR"
 
-tr = Storage("127.0.0.1", "5000")
-print(tr.get_schema_api())
+
+tr = StorageMaker("127.0.0.1", "5000")
+print(tr.storage.get_schema_api())
 print()
-for i in tr.cells:
+for i in tr.storage.cells:
     for j in i:
         print(j.busy, end=" ")
     print()
 print()
-tr.render()
+tr.storage.render()
 wb = WayBill("/Users/ovsannikovaleksandr/Desktop/предпроф/for_test.xlsx")
 for i in wb.create_item_list():
     print(i.__dict__)
 
 print()
-print(tr.put(wb))
-print(tr.item_uuid_cell_name_dict)
+print(tr.storage.put(wb))
+print(tr.storage.item_uuid_cell_name_dict)
 print()
 
-for i in tr.cells:
+for i in tr.storage.cells:
     for j in i:
         print(j.busy, end=" ")
     print()
 print()
+
+tr.__del__()
