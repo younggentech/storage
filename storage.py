@@ -12,13 +12,13 @@ class TalkToDB:
         pass
 
     def send_to_db(self, item, cell):
-        pass
+        print("sent to db " + item.name)
 
     def get_position_from_db(self, key):
         return "E1"
 
-    def send_to_remote_db(self, data):
-        pass
+    def send_to_remote_db(self, item):
+        print("sent to remote db " + item.name)
 
 
 class StorageMaker:
@@ -33,8 +33,8 @@ class StorageMaker:
         try:
             with open(os.getcwdb().decode() + "/storage", "wb") as f:
                 pickle.dump(self.storage, f)
-        except Error as e:
-            print(e)
+        except:
+            pass
 
 
 class Storage(RenderStorage):
@@ -78,11 +78,14 @@ class Storage(RenderStorage):
                                 break
                         else:
                             self.database_sender.send_to_remote_db(_item)
+                            _item_was_put = True
+                            break
                 if _item_was_put:
                     break
 
             # отправляем на удаленный склад, если место не найдено
-            self.database_sender.send_to_remote_db(items[_item_num])
+            if not _item_was_put:
+                self.database_sender.send_to_remote_db(items[_item_num])
 
         _resp = json.loads(self.put_item_api(_data_to_send_to_api))
         if _resp["status"] == "ok":
@@ -107,7 +110,7 @@ class Storage(RenderStorage):
     def get(self, uuid: str):
         """GET POSITION FROM STORAGE"""
         try:
-            _cell = self.easy_find_cell_by_name[self.database_sender.get_position_from_db(uuid)]
+            _cell = self.easy_find_cell_by_name[self.item_uuid_cell_name_dict[uuid]]
         except:
             return "NO SUCH UUID FOUND"
 
