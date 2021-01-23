@@ -33,6 +33,10 @@ class Cell:
     def get_from_item(self):
         self.contained_item = None
         self._make_free()
+    def make_rendered(self):
+        self.rendered = True
+    def make_not_rendered(self):
+        self.rendered = False
 
 
 class RenderStorage(StorageApi):

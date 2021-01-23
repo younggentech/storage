@@ -27,7 +27,7 @@ class StorageMaker:
             with open(os.getcwdb().decode() + "/storage", "rb") as file:
                 self.storage = pickle.load(file)
         else:
-            self.storage = Storage(port=port, host=host)
+            self.storage = StorageImproved(port=port, host=host)
 
     def __del__(self):
         try:
@@ -127,28 +127,47 @@ class Storage(RenderStorage):
             return "ERROR"
 
 
-tr = StorageMaker("127.0.0.1", "5000")
-print(tr.storage.get_schema_api())
-print()
-for i in tr.storage.cells:
-    for j in i:
-        print(j.busy, end=" ")
-    print()
-print()
-tr.storage.render()
-wb = WayBill("/Users/ovsannikovaleksandr/Desktop/предпроф/for_test.xlsx")
-for i in wb.create_item_list():
-    print(i.__dict__)
+class StorageImproved(Storage):
+    def __init__(self, host, port):
+        super().__init__(host, port)
+        self.unique_cells = []
+        for cell_block in self.cells:
+            for cell in cell_block:
+                if not cell.merged:
+                    self.unique_cells.append(cell)
+                
+                if cell.merged and not cell.rendered:
+                    self.unique_cells.append(cell)
+                    for merged_cell in cell.merged_with:
+                        self.easy_find_cell_by_name[merged_cell].make_rendered()
+        for cell_block in self.cells:
+            for cell in cell_block:
+                if cell.merged:
+                    cell.make_not_rendered()
+        
 
-print()
-print(tr.storage.put(wb))
-print(tr.storage.item_uuid_cell_name_dict)
-print()
-
-for i in tr.storage.cells:
-    for j in i:
-        print(j.busy, end=" ")
-    print()
-print()
-
-tr.__del__()
+# tr = StorageMaker("127.0.0.1", "5000")
+# print(tr.storage.get_schema_api())
+# print()
+# for i in tr.storage.cells:
+#     for j in i:
+#         print(j.busy, end=" ")
+#     print()
+# print()
+# tr.storage.render()
+# wb = WayBill("/Users/ovsannikovaleksandr/Desktop/предпроф/for_test.xlsx")
+# for i in wb.create_item_list():
+#     print(i.__dict__)
+#
+# print()
+# print(tr.storage.put(wb))
+# print(tr.storage.item_uuid_cell_name_dict)
+# print()
+#
+# for i in tr.storage.cells:
+#     for j in i:
+#         print(j.busy, end=" ")
+#     print()
+# print()
+#
+# tr.__del__()

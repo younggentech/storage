@@ -10,7 +10,15 @@
     </header>
 
     <div class="body">
-        <button>Показать схему склада</button>
+        {% for cell in storage.unique_cells %}
+                {% if not cell.merged  %}
+                    <p>Позиция: {{cell.name}}. <b>Товар: {{ cell.contained_item.name if cell.contained_item else "Свободно"}}</b></p>
+                {% endif %}
+
+                {% if cell.merged%}
+                    <p>Позиция: {{ cell.merged_with}}. <b>Товар: {{ cell.contained_item.name}}</b></p>
+                {% endif %}
+        {% endfor %}
     </div>
 </body>
 </html>
