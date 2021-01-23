@@ -11,13 +11,7 @@
 
     <div class="body">
         {% for cell in storage.unique_cells %}
-                {% if not cell.merged  %}
-                    <p>Позиция: {{cell.name}}. <b>Товар: {{ cell.contained_item.name if cell.contained_item else "Свободно"}}</b></p>
-                {% endif %}
-
-                {% if cell.merged%}
-                    <p>Позиция: {{ cell.merged_with}}. <b>Товар: {{ cell.contained_item.name}}</b></p>
-                {% endif %}
+                    <p>Позиция: {{cell.name if not cell.merged else cell.merged_with}}. <b>Товар: {{ cell.contained_item.name if cell.contained_item else "Свободно"}}</b>{% if cell.contained_item %} <button>Получить</button> {% endif %}</p>
         {% endfor %}
     </div>
 </body>
