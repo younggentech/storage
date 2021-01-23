@@ -1,5 +1,4 @@
 import json
-
 from get_data_from_csv_xls import Item
 from send_requests import StorageApi
 from PIL import Image, ImageDraw, ImageColor, ImageFont

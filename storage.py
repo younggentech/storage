@@ -1,6 +1,4 @@
 import json
-import sqlite3
-from sqlite3 import Error
 import os
 import pickle
 from render_storage import RenderStorage
