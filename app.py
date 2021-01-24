@@ -50,7 +50,7 @@ def get_data_from_item_search():
 
     return base64.b64encode(pickled)
 
-@application.route("/get_item_from_storage")
+@application.route("/get_item_from_storage", methods=["GET"])
 def get_item_from_storage():
     uuid = None
     cell_name = None
@@ -67,6 +67,9 @@ def get_item_from_storage():
         res = storage_maker.storage.get(cell_name=cell_name, type_of_work=1)
 
     return res
+@application.route("/put_items_to_storage", methods=["POST"])
+def put_items_to_storage():
+    pass
 
 if __name__ == '__main__':
     storage_maker = StorageMaker(port=5000, host="127.0.0.1")
