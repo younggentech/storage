@@ -22,6 +22,7 @@ class Cell:
 
     def _make_free(self):
         self.busy = False
+        self.contained_item = None
     def _make_busy(self):
         self.busy = True
 

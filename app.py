@@ -2,6 +2,7 @@ import pickle
 import base64
 from flask import Flask, render_template, request
 
+from get_data_from_csv_xls import WayBill
 from storage import StorageMaker
 
 application = Flask(__name__)
@@ -67,11 +68,24 @@ def get_item_from_storage():
         res = storage_maker.storage.get(cell_name=cell_name, type_of_work=1)
 
     return res
+
 @application.route("/put_items_to_storage", methods=["POST"])
 def put_items_to_storage():
-    pass
+    unbased = base64.b64decode(request.get_data())
+
+    try:
+        with open('waybill.xlsx', 'wb') as f:
+            f.write(unbased)
+    except:
+        return "CANNOT BE OPENED"
+
+    wb = WayBill('waybill.xlsx')
+    resp = storage_maker.storage.put(way_bill = wb)
+    return resp
 
 if __name__ == '__main__':
     storage_maker = StorageMaker(port=5000, host="127.0.0.1")
 
     application.run(host="192.168.0.109", port=3000)
+
+    storage_maker.__del__()

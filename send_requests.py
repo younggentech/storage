@@ -7,12 +7,12 @@ class StorageApi:
         self.port = port
 
     def get_schema_api(self):
-        answer = requests.get("http://"+self.host+":"+self.port+"/scheme")
+        answer = requests.get("http://"+self.host+":"+str(self.port)+"/scheme")
         return answer.text
 
     def put_item_api(self, data):
         try:
-            answer = requests.post(url="http://"+self.host+":"+self.port,
+            answer = requests.post(url="http://"+self.host+":"+str(self.port),
                                    json=data)
             return answer.text
         except Exception as e:
@@ -20,7 +20,7 @@ class StorageApi:
 
     def position_api(self, destination):
         try:
-            answer = requests.get(url="http://"+self.host+":"+self.port+"/position",
+            answer = requests.get(url="http://"+self.host+":"+str(self.port)+"/position",
                                   params=destination)
             return answer.text
         except Exception as e:
