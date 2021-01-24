@@ -146,30 +146,3 @@ class StorageImproved(Storage):
             for cell in cell_block:
                 if cell.merged:
                     cell.make_not_rendered()
-        
-
-# tr = StorageMaker("127.0.0.1", "5000")
-# print(tr.storage.get_schema_api())
-# print()
-# for i in tr.storage.cells:
-#     for j in i:
-#         print(j.busy, end=" ")
-#     print()
-# print()
-# tr.storage.render()
-# wb = WayBill("/Users/ovsannikovaleksandr/Desktop/предпроф/for_test.xlsx")
-# for i in wb.create_item_list():
-#     print(i.__dict__)
-#
-# print()
-# print(tr.storage.put(wb))
-# print(tr.storage.item_uuid_cell_name_dict)
-# print()
-#
-# for i in tr.storage.cells:
-#     for j in i:
-#         print(j.busy, end=" ")
-#     print()
-# print()
-#
-# tr.__del__()
