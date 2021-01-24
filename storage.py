@@ -105,14 +105,18 @@ class Storage(RenderStorage):
         else:
             return 5
 
-    def get(self, uuid: str):
+    def get(self, uuid = "", type_of_work = 0, cell_name = ""):
         """GET POSITION FROM STORAGE"""
         try:
-            _cell = self.easy_find_cell_by_name[self.item_uuid_cell_name_dict[uuid]]
+            if type_of_work ==0:
+                _cell = self.easy_find_cell_by_name[self.item_uuid_cell_name_dict[uuid]]
+            else:
+                _cell = self.easy_find_cell_by_name[cell_name]
         except:
-            return "NO SUCH UUID FOUND"
+            return "NO SUCH UUID OR CELL NAME FOUND"
 
         _resp = json.loads(self.position_api({"destination": [_cell.name] if not _cell.merged else _cell.merged_with}))
+        _cell._make_free()
         if _cell.merged:
             for _merged_cell in _cell.merged_with:
                 self.easy_find_cell_by_name[_merged_cell]._make_free()
