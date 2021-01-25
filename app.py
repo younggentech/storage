@@ -66,7 +66,7 @@ def get_item_from_storage():
         res = storage_maker.storage.get(uuid=uuid, type_of_work=0)
     else:
         res = storage_maker.storage.get(cell_name=cell_name, type_of_work=1)
-
+    storage_maker.save()
     return res
 
 @application.route("/put_items_to_storage", methods=["POST"])
@@ -81,6 +81,7 @@ def put_items_to_storage():
 
     wb = WayBill('waybill.xlsx')
     resp = storage_maker.storage.put(way_bill = wb)
+    storage_maker.save()
     return resp
 
 if __name__ == '__main__':
@@ -88,4 +89,4 @@ if __name__ == '__main__':
 
     application.run(host="192.168.0.109", port=3000)
 
-    storage_maker.__del__()
+    storage_maker.save()

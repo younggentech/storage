@@ -13,7 +13,7 @@ class TalkToDB:
         print("sent to db " + item.name)
 
     def get_position_from_db(self, key):
-        return "E1"
+        pass
 
     def send_to_remote_db(self, item):
         print("sent to remote db " + item.name)
@@ -26,6 +26,8 @@ class StorageMaker:
                 self.storage = pickle.load(file)
         else:
             self.storage = StorageImproved(port=port, host=host)
+    def save(self):
+        self.__del__()
 
     def __del__(self):
         try:
