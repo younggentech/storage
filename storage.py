@@ -27,6 +27,7 @@ class StorageMaker:
         else:
             self.storage = StorageImproved(port=port, host=host)
     def save(self):
+        print("Saving data...")
         self.__del__()
 
     def __del__(self):
