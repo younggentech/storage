@@ -1,13 +1,16 @@
 import json
 import os
 import pickle
+
+from remote_data_storage import TempStorage, RemoteDataStorage
 from render_storage import RenderStorage
 from get_data_from_csv_xls import Item, WayBill
 
 
 class TalkToDB:
     def __init__(self):
-        pass
+        self.remote_data_storage = RemoteDataStorage()
+        self.temp_data_storage = TempStorage()
 
     def send_to_db(self, item, cell):
         print("sent to db " + item.name)
@@ -16,6 +19,7 @@ class TalkToDB:
         pass
 
     def send_to_remote_db(self, item):
+        self.remote_data_storage.add_item(item)
         print("sent to remote db " + item.name)
 
 

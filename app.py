@@ -14,7 +14,9 @@ def hello_world():
 
 @application.route('/remote')
 def remote_storage():
-    return render_template("index.html", storage=storage_maker.storage)
+    with open("remote_storage_data", "rb") as f:
+        remote_items = pickle.load(f)
+    return render_template("remote.html", items=remote_items)
 
 
 

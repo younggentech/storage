@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Электронный склад</title>
+</head>
+<body>
+    <header>
+        <h1>Система управления электронным складом</h1>
+    </header>
+
+    <div class="body">
+        {% for item in items %}
+            <p><b>Товар: {{ item.name }}<br/>
+                Габариты: {{ item.original_height+"*"+item.original_width+"*"+item.original_depth }}<br/>
+                Масса: {{ item.mass }}<br/>
+                UUID: {{ item.uuid }}</b></p>
+        {% endfor %}
+    </div>
+</body>
+</html>

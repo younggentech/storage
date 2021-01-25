@@ -16,6 +16,9 @@ class Item(object):
         self.mass = mass
         self.uuid = uuid.uuid4().hex
 
+        self.original_height = height
+        self.original_width = width
+        self.original_depth = depth
     def __eq__(self, other) -> bool:
         if isinstance(other, Item):
             return self.mass == other.mass
