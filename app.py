@@ -12,6 +12,10 @@ application = Flask(__name__)
 def hello_world():
     return render_template("index.html", storage=storage_maker.storage)
 
+@application.route('/remote')
+def remote_storage():
+    return render_template("index.html", storage=storage_maker.storage)
+
 
 
 #routes for bot->
