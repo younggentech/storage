@@ -3,22 +3,30 @@ import os
 import pickle
 
 from remote_data_storage import TempStorage, RemoteDataStorage
-from render_storage import RenderStorage
+from render_storage import RenderStorage, Cell
 from get_data_from_csv_xls import Item, WayBill
 
 
 class TalkToDB:
     def __init__(self):
         self.remote_data_storage = RemoteDataStorage()
-        self.temp_data_storage = TempStorage()
 
-    def send_to_db(self, item, cell):
+        self.temp_data_storage = TempStorage()
+        self.remote_temp_data_storage = TempStorage()
+
+    def make_temp_storages(self):
+        self.remote_data_storage = TempStorage()
+        self.remote_temp_data_storage = TempStorage()
+
+    def send_to_db(self, item: Item, cell: Cell):
+        self.temp_data_storage.add_pair(item, cell)
         print("sent to db " + item.name)
 
     def get_position_from_db(self, key):
         pass
 
     def send_to_remote_db(self, item):
+        self.remote_temp_data_storage.add_item(item)
         self.remote_data_storage.add_item(item)
         print("sent to remote db " + item.name)
 
@@ -56,7 +64,7 @@ class Storage(RenderStorage):
     def _solve_how_to_put(self, items):
         """SOLVE HOW TO PUT ITEM TO DB"""
         _data_to_send_to_api = []
-
+        self.database_sender.make_temp_storages()
         for _item_num in range(len(items) - 1, -1, -1):
             _item_was_put = False
             for _block_num in range(self.height - 1, -1, -1):

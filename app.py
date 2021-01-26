@@ -18,7 +18,11 @@ def remote_storage():
         remote_items = pickle.load(f)
     return render_template("remote.html", items=remote_items)
 
-
+@application.route("/report")
+def report():
+    data = render_template("remote.html")
+    print(data)
+    return  data
 
 #routes for bot->
 
@@ -87,6 +91,10 @@ def put_items_to_storage():
 
     wb = WayBill('waybill.xlsx')
     resp = storage_maker.storage.put(way_bill = wb)
+    temp_data_from_storage = storage_maker.storage.database_sender.temp_data_storage.get_pair()
+    temp_remote_data_from_storage = storage_maker.storage.database_sender.remote_temp_data_storage.get_items()
+    print(temp_data_from_storage)
+    print(temp_remote_data_from_storage)
     storage_maker.save()
     return resp
 

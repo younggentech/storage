@@ -3,15 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Электронный склад</title>
+    <style>
+   .name {
+    text-align:  center;
+   }
+   .author{
+       text-align: left;
+   }
+  </style>
 </head>
 <body>
+
     <header>
-        <h1>Система управления электронным складом</h1>
+        <h3 class="author">©ПиФла</h3>
+        <h2 class="name">Система управления электронным складом</h2>
     </header>
 
     <div class="body">
         {% for cell in storage.unique_cells %}
-                    <p>Позиция: {{cell.name if not cell.merged else cell.merged_with}}. <b>Товар: {{ cell.contained_item.name if cell.contained_item else "Свободно"}}</b>{% if cell.contained_item %} <button>Получить</button> {% endif %}</p>
+                    <p>Позиция: {{cell.name if not cell.merged else cell.merged_with}}. <b>Товар: {{ cell.contained_item.name if cell.contained_item else "Свободно"}}</b></p>
         {% endfor %}
     </div>
 </body>

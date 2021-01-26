@@ -4,17 +4,27 @@ from get_data_from_csv_xls import Item
 import pickle
 import pdfkit
 
+from render_storage import Cell
+
 
 class TempStorage:
-    def __int__(self):
+    def __init__(self):
         self.items = []
+        self.cells = []
+
 
     def add_item(self, item: Item):
         self.items.append(item)
 
+    def add_pair(self, item: Item, cell: Cell):
+        self.items.append(item)
+        self.cells.append(cell)
+
     def get_items(self):
         return self.items
 
+    def get_pair(self):
+        return (self.items, self.cells)
 
 class RemoteDataStorage:
     def __init__(self):
