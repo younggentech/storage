@@ -10,11 +10,15 @@
     </header>
 
     <div class="body">
-        {% for item in items %}
-            <p><b>Товар: {{ item.name }}<br/>
-                Габариты: {{ item.original_height+"*"+item.original_width+"*"+item.original_depth }}<br/>
-                Масса: {{ item.mass }}<br/>
-                UUID: {{ item.uuid }}</b><br/><br/></p>
+        {% for item_num in range(len_of_array) %}
+            <p><b>Товар: {{ items[item_num].name }}<br/>
+                Габариты: {{ items[item_num].original_height+"*"+items[item_num].original_width+"*"+items[item_num].original_depth }}<br/>
+                Масса: {{ items[item_num].mass }}<br/>
+                UUID: {{ items[item_num].uuid }}</b><br/><br/>
+                {% if cells %}
+                    Полка: {{ cells[item_num].name }}
+                {% endif %}
+            </p>
         {% endfor %}
     </div>
 </body>

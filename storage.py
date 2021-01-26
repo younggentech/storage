@@ -15,7 +15,7 @@ class TalkToDB:
         self.remote_temp_data_storage = TempStorage()
 
     def make_temp_storages(self):
-        self.remote_data_storage = TempStorage()
+        self.temp_data_storage = TempStorage()
         self.remote_temp_data_storage = TempStorage()
 
     def send_to_db(self, item: Item, cell: Cell):

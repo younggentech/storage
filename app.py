@@ -16,11 +16,12 @@ def hello_world():
 def remote_storage():
     with open("remote_storage_data", "rb") as f:
         remote_items = pickle.load(f)
-    return render_template("remote.html", items=remote_items)
+    return render_template("remote.html", items=remote_items, len_of_array = len(remote_items))
 
 @application.route("/report")
-def report():
-    data = render_template("remote.html")
+def report(items=[], cells = []):
+    data = render_template("remote.html", items=items,
+                           cells = cells, len_of_array = len(items))
     print(data)
     return  data
 
@@ -93,6 +94,7 @@ def put_items_to_storage():
     resp = storage_maker.storage.put(way_bill = wb)
     temp_data_from_storage = storage_maker.storage.database_sender.temp_data_storage.get_pair()
     temp_remote_data_from_storage = storage_maker.storage.database_sender.remote_temp_data_storage.get_items()
+
     print(temp_data_from_storage)
     print(temp_remote_data_from_storage)
     storage_maker.save()
