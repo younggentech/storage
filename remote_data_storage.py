@@ -12,7 +12,6 @@ class TempStorage:
         self.items = []
         self.cells = []
 
-
     def add_item(self, item: Item):
         self.items.append(item)
 
@@ -25,6 +24,7 @@ class TempStorage:
 
     def get_pair(self):
         return (self.items, self.cells)
+
 
 class RemoteDataStorage:
     def __init__(self):

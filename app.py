@@ -14,39 +14,45 @@ application = Flask(__name__)
 def hello_world():
     return render_template("index.html", storage=storage_maker.storage)
 
+
 @application.route('/remote')
 def remote_storage():
     with open("remote_storage_data", "rb") as f:
         remote_items = pickle.load(f)
-    return render_template("remote.html", items=remote_items, len_of_array = len(remote_items), report=0)
+    return render_template("remote.html", items=remote_items, len_of_array=len(remote_items), report=0)
+
 
 @application.route("/report")
-def report(items=[], cells = []):
+def report(items=[], cells=[]):
     data = render_template("remote.html", items=items,
-                           cells = cells, len_of_array = len(items),
+                           cells=cells, len_of_array=len(items),
                            report=1)
-    print(data)
     return data
 
-#routes for bot->
+
+# routes for bot->
 @application.route("/get_storage_scheme")
 def api_scheme():
     storage_maker.storage.render()
     return redirect(url_for('static', filename='img/scheme.png'))
 
+
 @application.route("/get_storage")
 def get_storage():
     return storage_maker.storage
+
 
 @application.route("/get_list_of_all", methods=["GET"])
 def get_list_of_all():
     pickled = pickle.dumps(storage_maker.storage.unique_cells)
     return base64.b64encode(pickled)
 
+
 @application.route("/get_scheme", methods=["GET"])
 def get_scheme():
     storage_maker.storage.render()
     return "OK"
+
 
 @application.route("/get_cell", methods=["GET"])
 def get_cell():
@@ -58,6 +64,7 @@ def get_cell():
 
     return base64.b64encode(pickled)
 
+
 @application.route("/get_data_from_item_search", methods=["GET"])
 def get_data_from_item_search():
     _uuid = request.args.getlist("uuid")[0]
@@ -68,6 +75,7 @@ def get_data_from_item_search():
         pickled = "Not".encode()
 
     return base64.b64encode(pickled)
+
 
 @application.route("/get_item_from_storage", methods=["GET"])
 def get_item_from_storage():
@@ -87,6 +95,7 @@ def get_item_from_storage():
     storage_maker.save()
     return res
 
+
 @application.route("/put_items_to_storage", methods=["POST"])
 def put_items_to_storage():
     unbased = base64.b64decode(request.get_data())
@@ -98,7 +107,7 @@ def put_items_to_storage():
         return "CANNOT BE OPENED"
 
     wb = WayBill('waybill.xlsx')
-    resp = storage_maker.storage.put(way_bill = wb)
+    resp = storage_maker.storage.put(way_bill=wb)
     temp_data_from_storage = storage_maker.storage.database_sender.temp_data_storage.get_pair()
     temp_remote_data_from_storage = storage_maker.storage.database_sender.remote_temp_data_storage.get_items()
 
@@ -109,24 +118,29 @@ def put_items_to_storage():
         temp_data_for_report = report(items=temp_data_from_storage[0], cells=temp_data_from_storage[1])
         _pdf_for_main = PDFMaker(name_output="report storage.pdf", html=temp_data_for_report)
         _pdf_for_main.make_pdf()
-        os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report storage.pdf", "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report storage.pdf")
+        os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report storage.pdf",
+                  "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report storage.pdf")
     if temp_remote_data_from_storage:
         _pdf_remote = 1
         temp_remote_data_for_report = report(items=temp_remote_data_from_storage)
         _pdf_for_remote = PDFMaker(name_output="report remote storage.pdf", html=temp_remote_data_for_report)
         _pdf_for_remote.make_pdf()
-        os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report remote storage.pdf", "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report remote storage.pdf")
+        os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report remote storage.pdf",
+                  "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report remote storage.pdf")
 
     storage_maker.save()
-    return resp+"."+str(_pdf_main)+"."+str(_pdf_remote)
+    return resp + "." + str(_pdf_main) + "." + str(_pdf_remote)
+
 
 @application.route("/get_pdf_main")
 def api_main_pdf():
     return redirect(url_for('static', filename="pdf/report storage.pdf"))
 
+
 @application.route("/get_pdf_remote")
 def api_remote_pdf():
     return redirect(url_for('static', filename="pdf/report remote storage.pdf"))
+
 
 if __name__ == '__main__':
     storage_maker = StorageMaker(port=5000, host="127.0.0.1")

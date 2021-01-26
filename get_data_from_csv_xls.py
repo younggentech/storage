@@ -19,6 +19,7 @@ class Item(object):
         self.original_height = height
         self.original_width = width
         self.original_depth = depth
+
     def __eq__(self, other) -> bool:
         if isinstance(other, Item):
             return self.mass == other.mass
@@ -31,25 +32,25 @@ class Item(object):
 
         return NotImplemented
 
-    def __lt__(self,other) -> bool:
+    def __lt__(self, other) -> bool:
         if isinstance(other, Item):
             return self.mass < other.mass
 
         return NotImplemented
 
-    def __le__(self,other) -> bool:
+    def __le__(self, other) -> bool:
         if isinstance(other, Item):
             return self.mass <= other.mass
 
         return NotImplemented
 
-    def __gt__(self,other) -> bool:
+    def __gt__(self, other) -> bool:
         if isinstance(other, Item):
             return self.mass > other.mass
 
         return NotImplemented
 
-    def __ge__(self,other) -> bool:
+    def __ge__(self, other) -> bool:
         if isinstance(other, Item):
             return self.mass >= other.mass
 
