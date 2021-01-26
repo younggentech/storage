@@ -2,6 +2,7 @@ import os
 
 from get_data_from_csv_xls import Item
 import pickle
+import pdfkit
 
 
 class TempStorage:
@@ -35,5 +36,17 @@ class RemoteDataStorage:
         return self.items
 
     def __del__(self):
-        with open("remote_storage_data", "wb") as f:
-            pickle.dump(self.items, f)
+        try:
+            with open("remote_storage_data", "wb") as f:
+                pickle.dump(self.items, f)
+        except:
+            pass
+
+
+class PDFMaker:
+    def __init__(self, name_output, html):
+        self.name = name_output
+        self.html = html
+
+    def make_pdf(self, ):
+        pdfkit.from_string(self.html, self.name)
