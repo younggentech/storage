@@ -23,9 +23,13 @@ def report(items=[], cells = []):
     data = render_template("remote.html", items=items,
                            cells = cells, len_of_array = len(items))
     print(data)
-    return  data
+    return data
 
 #routes for bot->
+@application.route("/get_storage_scheme")
+def api_scheme():
+    storage_maker.storage.render()
+    return render_template("img.html")
 
 @application.route("/get_storage")
 def get_storage():
@@ -94,9 +98,10 @@ def put_items_to_storage():
     resp = storage_maker.storage.put(way_bill = wb)
     temp_data_from_storage = storage_maker.storage.database_sender.temp_data_storage.get_pair()
     temp_remote_data_from_storage = storage_maker.storage.database_sender.remote_temp_data_storage.get_items()
+    temp_data_for_report = report(items=temp_data_from_storage[0], cells=temp_data_from_storage[1])
+    temp_remote_data_for_report = report(items=temp_remote_data_from_storage)
 
-    print(temp_data_from_storage)
-    print(temp_remote_data_from_storage)
+    print(temp_data_for_report)
     storage_maker.save()
     return resp
 

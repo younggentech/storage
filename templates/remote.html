@@ -14,11 +14,15 @@
             <p><b>Товар: {{ items[item_num].name }}<br/>
                 Габариты: {{ items[item_num].original_height+"*"+items[item_num].original_width+"*"+items[item_num].original_depth }}<br/>
                 Масса: {{ items[item_num].mass }}<br/>
-                UUID: {{ items[item_num].uuid }}</b><br/><br/>
+                UUID: {{ items[item_num].uuid }}</b><br/>{% if not cells %}<br/>{% endif %}
                 {% if cells %}
-                    Полка: {{ cells[item_num].name }}
+                    <b>Полка: {{cells[item_num].name if not cells[item_num].merged else cells[item_num].merged_with}}</b><br/><br/>
                 {% endif %}
             </p>
+            {% if cells %}
+
+                <img src="{{ url_for('static', filename='img/scheme.png') }}" alt=""/>
+            {% endif %}
         {% endfor %}
     </div>
 </body>

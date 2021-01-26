@@ -274,4 +274,4 @@ class RenderStorage(StorageApi):
                           fill=ImageColor.getrgb("black"), font=font)
 
         del draw
-        image.save("/Users/ovsannikovaleksandr/Desktop/предпроф/back/templates/img/scheme.png", "PNG")
+        image.save("/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/img/scheme.png", "PNG")
