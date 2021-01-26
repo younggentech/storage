@@ -3,10 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Электронный склад</title>
+        <style>
+   .name {
+    text-align:  center;
+   }
+   .author{
+       text-align: left;
+   }
+  </style>
 </head>
 <body>
     <header>
-        <h1>Система управления электронным складом</h1>
+        <h3 class="author">©ПиФла 2021</h3>
+
+            {% if report and not cells %}
+                <h1 class="name">Отчет о добавлении позиций на удаленный склад.</h1>
+            {% endif %}
+
+            {% if cells %}
+                <h1 class="name">Отчет о добавлении позиций на склад.</h1>
+            {% endif %}
+        <h2 class="name">Система управления электронным складом.</h2>
     </header>
 
     <div class="body">
@@ -19,11 +36,12 @@
                     <b>Полка: {{cells[item_num].name if not cells[item_num].merged else cells[item_num].merged_with}}</b><br/><br/>
                 {% endif %}
             </p>
-            {% if cells %}
-
-{#                <img src="{{ url_for('static', filename='img/scheme.png') }}" alt=""/>#}
-            {% endif %}
         {% endfor %}
+
+    {% if cells %}
+
+                <img src="http://192.168.0.109:3000/get_storage_scheme" alt=""/>
+            {% endif %}
     </div>
 </body>
 </html>

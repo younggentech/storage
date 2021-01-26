@@ -1,6 +1,7 @@
+import os
 import pickle
 import base64
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 from get_data_from_csv_xls import WayBill
 from remote_data_storage import PDFMaker
@@ -17,12 +18,13 @@ def hello_world():
 def remote_storage():
     with open("remote_storage_data", "rb") as f:
         remote_items = pickle.load(f)
-    return render_template("remote.html", items=remote_items, len_of_array = len(remote_items))
+    return render_template("remote.html", items=remote_items, len_of_array = len(remote_items), report=0)
 
 @application.route("/report")
 def report(items=[], cells = []):
     data = render_template("remote.html", items=items,
-                           cells = cells, len_of_array = len(items))
+                           cells = cells, len_of_array = len(items),
+                           report=1)
     print(data)
     return data
 
@@ -30,7 +32,7 @@ def report(items=[], cells = []):
 @application.route("/get_storage_scheme")
 def api_scheme():
     storage_maker.storage.render()
-    return render_template("img.html")
+    return redirect(url_for('static', filename='img/scheme.png'))
 
 @application.route("/get_storage")
 def get_storage():
@@ -99,17 +101,29 @@ def put_items_to_storage():
     resp = storage_maker.storage.put(way_bill = wb)
     temp_data_from_storage = storage_maker.storage.database_sender.temp_data_storage.get_pair()
     temp_remote_data_from_storage = storage_maker.storage.database_sender.remote_temp_data_storage.get_items()
-    temp_data_for_report = report(items=temp_data_from_storage[0], cells=temp_data_from_storage[1])
-    temp_remote_data_for_report = report(items=temp_remote_data_from_storage)
 
-    _pdf_for_main = PDFMaker(name_output="report storage.pdf", html=temp_data_for_report)
-    _pdf_for_remote = PDFMaker(name_output="report remote storage.pdf", html=temp_remote_data_for_report)
+    if temp_data_from_storage:
+        temp_data_for_report = report(items=temp_data_from_storage[0], cells=temp_data_from_storage[1])
+        _pdf_for_main = PDFMaker(name_output="report storage.pdf", html=temp_data_for_report)
+        _pdf_for_main.make_pdf()
+        os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report storage.pdf", "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report storage.pdf")
 
-    _pdf_for_main.make_pdf()
-    _pdf_for_remote.make_pdf()
+    if temp_remote_data_from_storage:
+        temp_remote_data_for_report = report(items=temp_remote_data_from_storage)
+        _pdf_for_remote = PDFMaker(name_output="report remote storage.pdf", html=temp_remote_data_for_report)
+        _pdf_for_remote.make_pdf()
+        os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report remote storage.pdf", "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report remote storage.pdf")
 
     storage_maker.save()
     return resp
+
+@application.route("/get_pdf_main")
+def api_main_pdf():
+    return redirect(url_for('static', filename="pdf/report storage.pdf"))
+
+@application.route("/get_pdf_remote")
+def api_remote_pdf():
+    return redirect(url_for('static', filename="pdf/report remote storage.pdf"))
 
 if __name__ == '__main__':
     storage_maker = StorageMaker(port=5000, host="127.0.0.1")
