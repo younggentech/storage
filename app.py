@@ -3,6 +3,7 @@ import base64
 from flask import Flask, render_template, request
 
 from get_data_from_csv_xls import WayBill
+from remote_data_storage import PDFMaker
 from storage import StorageMaker
 
 application = Flask(__name__)
@@ -101,7 +102,12 @@ def put_items_to_storage():
     temp_data_for_report = report(items=temp_data_from_storage[0], cells=temp_data_from_storage[1])
     temp_remote_data_for_report = report(items=temp_remote_data_from_storage)
 
-    print(temp_data_for_report)
+    _pdf_for_main = PDFMaker(name_output="report storage.pdf", html=temp_data_for_report)
+    _pdf_for_remote = PDFMaker(name_output="report remote storage.pdf", html=temp_remote_data_for_report)
+
+    _pdf_for_main.make_pdf()
+    _pdf_for_remote.make_pdf()
+
     storage_maker.save()
     return resp
 
