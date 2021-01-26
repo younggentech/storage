@@ -37,11 +37,6 @@ def api_scheme():
     return redirect(url_for('static', filename='img/scheme.png'))
 
 
-@application.route("/get_storage")
-def get_storage():
-    return storage_maker.storage
-
-
 @application.route("/get_list_of_all", methods=["GET"])
 def get_list_of_all():
     pickled = pickle.dumps(storage_maker.storage.unique_cells)
