@@ -102,20 +102,23 @@ def put_items_to_storage():
     temp_data_from_storage = storage_maker.storage.database_sender.temp_data_storage.get_pair()
     temp_remote_data_from_storage = storage_maker.storage.database_sender.remote_temp_data_storage.get_items()
 
+    _pdf_main = 0
+    _pdf_remote = 0
     if temp_data_from_storage:
+        _pdf_main = 1
         temp_data_for_report = report(items=temp_data_from_storage[0], cells=temp_data_from_storage[1])
         _pdf_for_main = PDFMaker(name_output="report storage.pdf", html=temp_data_for_report)
         _pdf_for_main.make_pdf()
         os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report storage.pdf", "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report storage.pdf")
-
     if temp_remote_data_from_storage:
+        _pdf_remote = 1
         temp_remote_data_for_report = report(items=temp_remote_data_from_storage)
         _pdf_for_remote = PDFMaker(name_output="report remote storage.pdf", html=temp_remote_data_for_report)
         _pdf_for_remote.make_pdf()
         os.rename("/Users/ovsannikovaleksandr/Desktop/предпроф/back/report remote storage.pdf", "/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/pdf/report remote storage.pdf")
 
     storage_maker.save()
-    return resp
+    return resp+"."+str(_pdf_main)+"."+str(_pdf_remote)
 
 @application.route("/get_pdf_main")
 def api_main_pdf():
