@@ -58,5 +58,5 @@ class PDFMaker:
         self.name = name_output
         self.html = html
 
-    def make_pdf(self, ):
+    def make_pdf(self):
         pdfkit.from_string(self.html, self.name)
