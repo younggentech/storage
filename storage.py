@@ -124,7 +124,7 @@ class Storage(RenderStorage):
         """GET POSITION FROM STORAGE"""
         try:
             if type_of_work ==0:
-                _cell = self.easy_find_cell_by_name[self.item_uuid_cell_name_dict[uuid]]
+                _cell = self.easy_find_cell_by_name[self.item_uuid_cell_name_dict[uuid.lower()]]
             else:
                 _cell = self.easy_find_cell_by_name[cell_name]
         except:
