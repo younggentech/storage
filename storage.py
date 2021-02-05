@@ -38,6 +38,7 @@ class StorageMaker:
                 self.storage = pickle.load(file)
         else:
             self.storage = StorageImproved(port=port, host=host)
+
     def save(self):
         print("Saving data...")
         self.__del__()
@@ -120,10 +121,10 @@ class Storage(RenderStorage):
         else:
             return 5
 
-    def get(self, uuid = "", type_of_work = 0, cell_name = ""):
+    def get(self, uuid="", type_of_work=0, cell_name=""):
         """GET POSITION FROM STORAGE"""
         try:
-            if type_of_work ==0:
+            if type_of_work == 0:
                 _cell = self.easy_find_cell_by_name[self.item_uuid_cell_name_dict[uuid.lower()]]
             else:
                 _cell = self.easy_find_cell_by_name[cell_name]
@@ -152,7 +153,7 @@ class StorageImproved(Storage):
             for cell in cell_block:
                 if not cell.merged:
                     self.unique_cells.append(cell)
-                
+
                 if cell.merged and not cell.rendered:
                     self.unique_cells.append(cell)
                     for merged_cell in cell.merged_with:
@@ -161,3 +162,17 @@ class StorageImproved(Storage):
             for cell in cell_block:
                 if cell.merged:
                     cell.make_not_rendered()
+
+    def get_json_data_unique_cells(self):
+        data = []
+        for i in self.unique_cells:
+            if not i.busy:
+                data.append(i.__dict__)
+            else:
+                _ = {}
+                _.update({"name": i.name, "lvl": i.lvl, "merged": i.merged, "merged_with": i.merged_with,
+                          "size_width": i.size_width, "size_height": i.size_height, "size_depth": i.size_depth,
+                          "busy": i.busy, "rendered": i.rendered, "contained_item": i.contained_item.__dict__})
+                data.append(data)
+        print(data)
+        return data
