@@ -33,7 +33,7 @@ def report(items=[], cells=[]):
 
 # routes for bot->
 
-@application.route("/connected")
+@application.route("/test_conn")
 def ok():
     return "OK"
 
@@ -41,14 +41,14 @@ def ok():
 # def get_list_of_all_json():
 #     return json.dumps(storage_maker.storage.get_json_data_unique_cells())
 
-@application.route("/get_remote_json")
-def get_remote_json():
-    final = []
-    with open("remote_storage_data", "rb") as f:
-        __data_from_remote = pickle.load(f)
-    for item in __data_from_remote:
-        final.append(item.__dict__)
-    return json.dumps(final)
+# @application.route("/get_remote_json")
+# def get_remote_json():
+#     final = []
+#     with open("remote_storage_data", "rb") as f:
+#         __data_from_remote = pickle.load(f)
+#     for item in __data_from_remote:
+#         final.append(item.__dict__)
+#     return json.dumps(final)
 
 @application.route("/get_storage_scheme")
 def api_scheme():
