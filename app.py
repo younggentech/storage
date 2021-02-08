@@ -9,7 +9,7 @@ from remote_data_storage import PDFMaker
 from storage import StorageMaker
 
 application = Flask(__name__)
-
+storage_maker = StorageMaker(port=5000, host="127.0.0.1")
 
 @application.route('/')
 def hello_world():
@@ -18,9 +18,13 @@ def hello_world():
 
 @application.route('/remote')
 def remote_storage():
-    with open("remote_storage_data", "rb") as f:
-        remote_items = pickle.load(f)
-    return render_template("remote.html", items=remote_items, len_of_array=len(remote_items), report=0)
+    try:
+        with open("remote_storage_data", "rb") as f:
+            remote_items = pickle.load(f)
+            return render_template("remote.html", items=remote_items, len_of_array=len(remote_items), report=0)
+    except:
+        with open("remote_storage_data", "wb"):
+            return ""
 
 
 @application.route("/report")
@@ -157,8 +161,5 @@ def api_remote_pdf():
 
 
 if __name__ == '__main__':
-    storage_maker = StorageMaker(port=5000, host="127.0.0.1")
-
     application.run(host="192.168.0.109", port=3000)
 
-    storage_maker.save()
