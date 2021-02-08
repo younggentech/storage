@@ -11,6 +11,7 @@ from storage import StorageMaker
 application = Flask(__name__)
 storage_maker = StorageMaker(port=5000, host="127.0.0.1")
 
+
 @application.route('/')
 def hello_world():
     return render_template("index.html", storage=storage_maker.storage)
@@ -41,6 +42,7 @@ def report(items=[], cells=[]):
 def ok():
     return "OK"
 
+
 # @application.route("/get_list_of_all_json")
 # def get_list_of_all_json():
 #     return json.dumps(storage_maker.storage.get_json_data_unique_cells())
@@ -53,6 +55,17 @@ def ok():
 #     for item in __data_from_remote:
 #         final.append(item.__dict__)
 #     return json.dumps(final)
+
+@application.route("/get_remote_pickle")
+def get_remote_pickle():
+    try:
+        with open("remote_storage_data", "rb") as f:
+            remote_items = f.read()
+        return base64.b64encode(remote_items)
+    except:
+        with open("remote_storage_data", "wb"):
+            return base64.b64encode("")
+
 
 @application.route("/get_storage_scheme")
 def api_scheme():
@@ -162,4 +175,3 @@ def api_remote_pdf():
 
 if __name__ == '__main__':
     application.run(host="192.168.0.109", port=3000)
-
