@@ -19,11 +19,11 @@ def hello_world():
 
 @application.route('/remote')
 def remote_storage():
-    try:
+    if os.path.exists(os.getcwdb().decode() + "/remote_storage_data"):
         with open("remote_storage_data", "rb") as f:
             remote_items = pickle.load(f)
             return render_template("remote.html", items=remote_items, len_of_array=len(remote_items), report=0)
-    except:
+    else:
         with open("remote_storage_data", "wb"):
             return ""
 
@@ -58,13 +58,12 @@ def ok():
 
 @application.route("/get_remote_pickle")
 def get_remote_pickle():
-    try:
+    if os.path.exists(os.getcwdb().decode() + "/remote_storage_data"):
         with open("remote_storage_data", "rb") as f:
             remote_items = f.read()
         return base64.b64encode(remote_items)
-    except:
-        with open("remote_storage_data", "wb"):
-            return base64.b64encode("")
+    else:
+        return base64.b64encode(b"")
 
 
 @application.route("/get_storage_scheme")
